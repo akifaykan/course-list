@@ -1,8 +1,7 @@
-// Todo List App
 
 class Course {
     constructor(title, image){
-        this.courseId = Math.floor(Math.random()*10000)
+        this.id = Math.floor(Math.random() * 10000)
         this.title = title
         this.image = image
     }
@@ -10,50 +9,49 @@ class Course {
 
 class UI {
     addCourse(course){
-        const courseList = document.getElementById('course-list')
-
-        const listHtml = `
+        const courseHtml = `
             <tr>
-                <td><img src="./img/${course.image}" alt="${course.title}"></td>
+                <td>${course.image}</td>
                 <td>${course.title}</td>
-                <td><a href="#" data-id="${course.courseId}" class="remove-link">Sil</a></td>
+                <td><a href="#" data-id="${course.id}" class="remove-link">Del</a></td>
             </tr>
         `
-
-        courseList.innerHTML += listHtml
+        const courseList = document.getElementById('course-list')
+        
+        courseList.innerHTML += courseHtml
+    }
+    
+    clearForm(){
+        document.querySelector('[name="title"]').value = ""
+        document.querySelector('[name="image"]').value = ""
     }
 
-    clearCourse(){
-        const image = document.querySelector('[name="image"]').value = ""
-        const title = document.querySelector('[name="title"]').value = ""
-    }
-
-    deleteCourse(e){
-        if(e.classList.contains('remove-link')){
+    removeItem(e){
+        if (e.classList.contains('remove-link')){
             e.parentElement.parentElement.remove()
-
-            const ui = new UI()
-            this.messages('Kurs başarıyla silindi!', 'danger')
+            
+            this.message('Kurs silindi', 'danger')
         }
     }
     
-    messages(message, classes='default'){
-        const alert = `
+    message(message, classes = "default"){
+        const alert = document.querySelector('.alert-message')
+        
+        const alertHtml = `
             <div class="alert ${classes}">${message}</div>
         `
         
-        const messages = document.querySelector('.alert-message')
-        messages.insertAdjacentHTML('afterbegin', alert)
+        alert.insertAdjacentHTML('afterbegin', alertHtml)
         
-        setTimeout( () => {
-            const alert = document.querySelector('.alert')
-            alert.remove()
+        setTimeout(() => {
+            const timeAlert = document.querySelector('.alert')
+            timeAlert.remove()
         }, 1200)
     }
 }
 
-class Storege {
-    static getCourses(){
+class Storage {
+    static getStorage(){
         let courses
         
         if( localStorage.getItem('courses') === null ){
@@ -64,30 +62,31 @@ class Storege {
         
         return courses
     }
-    
-    static displayCourses(){
-        const courses = this.getCourses()
+
+    static displayStorage(){
+        const courses = Storage.getStorage()
         
         courses.forEach(course => {
             const ui = new UI()
+            
             ui.addCourse(course)
         })
     }
-    
-    static addCourse(course){
-        const courses = this.getCourses()
+
+    static addStorage(e){
+        const courses = Storage.getStorage()
         
-        courses.push(course)
+        courses.push(e)
         localStorage.setItem('courses', JSON.stringify(courses))
     }
-    
-    static deleteCourse(e){
-        if(e.classList.contains('remove-link')){
+
+    static removeStorage(e){
+        if (e.classList.contains('remove-link')){
             const id = e.getAttribute('data-id')
-            const courses = this.getCourses()
+            const courses = Storage.getStorage()
             
             courses.forEach((course, index) => {
-                if(course.courseId == id){
+                if (course.id == id){
                     courses.splice(index, 1)
                 }
             })
@@ -97,49 +96,46 @@ class Storege {
     }
 }
 
-class Actions {
+class Action {
     constructor(){
-        const courseForm = document.getElementById('course-form')
-        const courseList = document.getElementById('course-list')
+        const form = document.getElementById('course-form')
+        const list = document.getElementById('course-list')
         
-        document.addEventListener('DOMContentLoaded', Storege.displayCourses())
-
-        courseForm.addEventListener( 'submit', this.submitForm )
-        courseList.addEventListener( 'click', this.deleteItem )
+        document.addEventListener('DOMContentLoaded', Storage.displayStorage)
+        
+        form.addEventListener('submit', this.submitForm)
+        list.addEventListener('click', this.removeCourse)
     }
-
+    
     submitForm(e){
         const title = document.querySelector('[name="title"]').value
         const image = document.querySelector('[name="image"]').value
-
-        const course = new Course( title, image )
+        
+        const course = new Course(title, image)
         const ui = new UI()
         
-        if( title === '' || image === '' ){
-            ui.messages('Lütfen alanları boş bırakmayınız!', 'warning')
+        if (title === '' || image === ''){
+            ui.message('Lütfen alanları boş bırakmayınız!', 'warning')
         } else {
-            //Add, Clear, Message
             ui.addCourse(course)
-            ui.clearCourse()
-            ui.messages('Kurs başarıyla eklendi!', 'success')
-
-            // Save item LocalStorage
-            Storege.addCourse(course)
+            ui.clearForm()
+            ui.message('Kurs başarı ile eklendi!', 'success')
+            
+            Storage.addStorage(course)
         }
 
         e.preventDefault()
     }
-
-    deleteItem(e){
+    
+    removeCourse(e){
         const ui = new UI()
-
-        ui.deleteCourse(e.target)
-
-        // Delete item LocalStorage
-        Storege.deleteCourse(e.target)
+        
+        ui.removeItem(e.target)
+        
+        Storage.removeStorage(e.target)
         
         e.preventDefault()
     }
 }
 
-new Actions()
+new Action()
