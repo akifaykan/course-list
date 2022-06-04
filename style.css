@@ -1,0 +1,74 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+}
+body {
+    max-width: 1080px;
+    margin: 3rem auto;
+}
+.grid-wrap {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 3rem;
+}
+.form {
+    border-right: 1px solid #c1c1c1;
+}
+
+#course-form {
+    display: flex;
+    column-gap: .4rem;
+}
+input[type="text"] {
+    padding: .4rem 1rem;
+    border: 1px solid #d7d7d7;
+    border-radius: 4px;
+    max-width: 200px;
+}
+button {
+    padding: .4rem 1rem;
+    border: none;
+    background-color: purple;
+    color: #fff;
+    border-radius: 4px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table td, table th {
+    border: 1px solid #ddd;
+    padding: 1rem;
+}
+table tr:nth-child(even){background-color: #f2f2f2;}
+table th {
+    padding: 1rem 2rem;
+    text-align: left;
+}
+
+/*.alert-message {
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+}*/
+.alert {
+    padding: .2rem 1rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+.alert.default {
+    background-color: #eee;
+}
+.alert.warning {
+    background-color: #ecd5d5;
+}
+.alert.danger {
+    background-color: #ecdfd5;
+}
+.alert.success {
+    background-color: #d7ecd5;
+}
