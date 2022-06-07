@@ -9,7 +9,7 @@ class Course {
 }
 
 class UI {
-    addCourse(course){
+    static addCourse(course){
         const courseList = document.getElementById('course-list')
 
         const listHtml = `
@@ -23,21 +23,20 @@ class UI {
         courseList.innerHTML += listHtml
     }
 
-    clearCourse(){
+    static clearCourse(){
         const image = document.querySelector('[name="image"]').value = ""
         const title = document.querySelector('[name="title"]').value = ""
     }
 
-    deleteCourse(e){
+    static deleteCourse(e){
         if(e.classList.contains('remove-link')){
             e.parentElement.parentElement.remove()
 
-            const ui = new UI()
-            this.messages('Kurs başarıyla silindi!', 'danger')
+            UI.messages('Kurs başarıyla silindi!', 'danger')
         }
     }
     
-    messages(message, classes='default'){
+    static messages(message, classes='default'){
         const alert = `
             <div class="alert ${classes}">${message}</div>
         `
@@ -66,16 +65,15 @@ class Storege {
     }
     
     static displayCourses(){
-        const courses = this.getCourses()
+        const courses = Storage.getCourses()
         
         courses.forEach(course => {
-            const ui = new UI()
-            ui.addCourse(course)
+            UI.addCourse(course)
         })
     }
     
     static addCourse(course){
-        const courses = this.getCourses()
+        const courses = Storage.getCourses()
         
         courses.push(course)
         localStorage.setItem('courses', JSON.stringify(courses))
@@ -113,15 +111,14 @@ class Actions {
         const image = document.querySelector('[name="image"]').value
 
         const course = new Course( title, image )
-        const ui = new UI()
-        
+
         if( title === '' || image === '' ){
-            ui.messages('Lütfen alanları boş bırakmayınız!', 'warning')
+            UI.messages('Lütfen alanları boş bırakmayınız!', 'warning')
         } else {
             //Add, Clear, Message
-            ui.addCourse(course)
-            ui.clearCourse()
-            ui.messages('Kurs başarıyla eklendi!', 'success')
+            UI.addCourse(course)
+            UI.clearCourse()
+            UI.messages('Kurs başarıyla eklendi!', 'success')
 
             // Save item LocalStorage
             Storege.addCourse(course)
@@ -131,9 +128,7 @@ class Actions {
     }
 
     deleteItem(e){
-        const ui = new UI()
-
-        ui.deleteCourse(e.target)
+        UI.deleteCourse(e.target)
 
         // Delete item LocalStorage
         Storege.deleteCourse(e.target)
